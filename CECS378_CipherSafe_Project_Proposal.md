@@ -1,4 +1,4 @@
-# CECS 378 — CipherSafe Project Proposal
+# CECS 378 - CipherSafe Project Proposal
 
 **Project:** CipherSafe: Encrypted Messaging and Security Demonstration  
 **Course:** CECS 378  
