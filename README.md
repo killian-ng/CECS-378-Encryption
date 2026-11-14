@@ -1,4 +1,4 @@
-# CECS 378 — CipherSafe
+# CECS 378 - CipherSafe
 
 **Team:** Luke Alegre, Killian Nguyen, David Rincon, Eric To  
 **Due:** November 20, 2026
