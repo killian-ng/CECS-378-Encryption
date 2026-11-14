@@ -32,6 +32,3 @@ test.mjs        # Automated tests
 ## Group decisions still open
 - Keep it localhost-only (recommended) or add more networking?
 - Add a simple results dashboard only if the core demo works?
-- Which two days will the team work together, and who will present the live demo?
-
-This is an educational demo, not a production-secure messaging service. Keep all attack tests local and authorized.
