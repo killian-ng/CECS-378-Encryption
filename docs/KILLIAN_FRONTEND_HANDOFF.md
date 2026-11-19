@@ -1,38 +1,44 @@
-# Frontend handoff — Killian (KAN-18)
+# CipherSafe - Frontend Notes (KAN-18)
 
-## What this part covers
-- A step-by-step web interface: generate key → encrypt → receive → test defenses → compare Caesar cipher.
-- Demo navigation, progress checklist, local-server indicator, sample message, character count, and receiver-tab link.
-- Plain-English explanations for the wrong-key test, tampered ciphertext, and Caesar brute force.
-- Responsive layout and keyboard-friendly controls.
+## What I worked on
 
-## Files for this part
-- `public/index.html` — page layout and demo walkthrough
-- `public/styles.css` — styles, status indicators, mobile layout
-- `public/app.mjs` — frontend actions, progress states and API integration
+I worked on the website part of CipherSafe. Since we only have two days to finish, I tried to keep everything simple so we can use it during the live demo without having to explain a bunch of extra steps.
 
-The actual source files are packaged separately as **Killian_Frontend_Files_Only.zip** in the project chat. They must still be uploaded to this branch.
+The website goes in order: generate a key, encrypt a message, open another tab to decrypt it, and then try the wrong-key and tampering tests. I also added a sample message, a server connection indicator, and a section to check what gets saved on the server.
 
-## How to integrate without overwriting the team
-- Luke owns `public/crypto-core.mjs` (key/encryption logic).
-- David owns `server.cjs` (local API/storage).
-- Eric owns the security test results and attack demo checks.
-- Killian owns the three frontend files listed above.
-- If your repo doesn't have the backend and crypto files yet, use the **CipherSafe_Killian_Frontend_Ready.zip** starter from the project chat to get a runnable baseline, then review each teammate's contributions before merging.
+I kept the Caesar cipher example on the same page so we can compare the results.
 
-## Run the demo
-1. Install Node.js 20+ and open the project folder.
-2. Run `npm start`, then visit `http://127.0.0.1:8787`.
-3. Generate a key, use a sample message, encrypt, and inspect the saved record.
-4. Open a second tab; enter the same key; decrypt the message.
-5. Try the wrong key and tampering tests.
-6. Run the 26 Caesar key attempts.
-7. Run `npm test` and capture screenshots for the report.
+## My files
 
-## Test status
-- Six existing automated crypto/server tests passed locally on November 19, 2026.
-- `node --check public/app.mjs` passed.
-- Automated visual browser testing was blocked by the local tool environment. The group must manually click through the UI on their laptop before marking KAN-18 **Done**.
+- `public/index.html` - the website layout and buttons
+- `public/styles.css` - colors, layout, and smaller-screen support
+- `public/app.mjs` - button actions, message list, and server connection
 
-## Key limitations
-Localhost education demo only; no accounts or secure key exchange. Do not use real secrets, and do not call the demo production-secure messaging.
+Luke is working on the AES encryption part, David on the server, and Eric on the security tests. I kept those pieces separate so we can merge everyone's changes.
+
+## Running it
+
+1. Open the project folder in VS Code.
+2. Make sure Node.js 20+ is installed.
+3. Run `npm start` in the folder with `package.json`.
+4. Go to `http://127.0.0.1:8787`.
+5. Use `npm test` to run the automated checks.
+
+## Still need to check
+
+- [ ] Generate a key and copy it.
+- [ ] Encrypt a sample message and check that it appears on the page.
+- [ ] Open another tab and decrypt it with the same key.
+- [ ] Try a different key. Decryption should fail.
+- [ ] Change the encrypted data. It should fail too.
+- [ ] Test all 26 Caesar shifts.
+- [ ] Check that the server record doesn't contain the original message or key.
+- [ ] Take screenshots and make sure the website looks okay in a smaller window.
+
+The existing automated tests passed (6/6) on Nov 19, but we still need to check the buttons manually in a browser before saying this task is done.
+
+## Before merging
+
+The frontend source is in the **Killian_Frontend_Natural_Style.zip** file in our project chat. The full runnable version is **CipherSafe_Killian_Natural_Style.zip**. The starter also contains initial encryption and server files, so check with Luke and David before replacing their versions.
+
+This is just a local school demo, not a real secure messaging service.
