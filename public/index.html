@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CipherSafe | CECS 378</title>
+<link rel="stylesheet" href="/styles.css">
+<script type="module" src="/app.mjs"></script>
+</head><body>
+<main class="container">
+  <header class="hero">
+    <div class="eyebrow"><span class="pulse"></span> CECS 378 | ENCRYPTION PROJECT</div>
+    <h1>Cipher<span>Safe</span></h1>
+    <p>See how encryption works by sending a message, reading it with a key, and testing what happens when the key is wrong.</p>
+    <div class="heroNotes"><span>🔐 AES-256-GCM</span><span>🛡️ Local demo</span><span>💻 Built for CECS 378</span></div>
+  </header>
+  <nav class="demo-nav" aria-label="Demo sections">
+    <a href="#step-key">1. Key</a>
+    <a href="#step-encrypt">2. Encrypt</a>
+    <a href="#step-receive">3. Decrypt</a>
+    <a href="#step-attack">4. Test</a>
+    <a href="#step-caesar">5. Caesar cipher</a>
+    <a href="#step-iv">6. IV reuse</a>
+  </nav>
+  <section class="demo-intro" aria-label="Presentation walkthrough">
+    <div class="intro-copy">
+      <span class="section-kicker">HOW TO USE THE DEMO</span>
+      <h2>Start with a message. Then see what happens to it.</h2>
+      <p>Go through each step below. The website runs on our local server, so we can show what actually happens to the message.</p>
+    </div>
+    <div class="live-state"><span id="serverStatus" class="status-pill" role="status">● Checking local server…</span><small>Running on this computer</small></div>
+    <ol class="demo-progress" aria-label="Demo progress">
+      <li id="progress-key">Generate a key</li>
+      <li id="progress-send">Encrypt a message</li>
+      <li id="progress-receive">Decrypt the message</li>
+      <li id="progress-attack">Test wrong key / tampering</li>
+    </ol>
+  </section>
+  <div class="notice"><strong>For our class demo only.</strong> This runs on localhost. It is not a real messaging service, so please use test messages only.</div>
+  <section class="panel" id="step-key"><div class="sectionTitle"><span class="number">01</span><div><h2>Step 1: Generate a key</h2><p>We use the same key to encrypt and decrypt a message. The server does not receive the key.</p></div></div>
+    <label for="sharedKey">Shared key (AES-256)</label>
+    <div class="inputRow"><input id="sharedKey" type="password" spellcheck="false" autocomplete="off" placeholder="Generate a key or paste one here"><button id="toggleKey" class="button subtle">Show</button></div>
+    <div class="buttonRow"><button id="generateKey" class="button primary">Generate key</button><button id="copyKey" class="button secondary">Copy key</button></div>
+    <div id="keyFeedback" class="feedback" role="status"></div>
+  </section>
+  <section class="panel" id="step-encrypt"><div class="sectionTitle"><span class="number">02</span><div><h2>Step 2: Encrypt the message</h2><p>The browser encrypts the message first, then the server stores the encrypted version.</p></div></div>
+    <label for="plaintext">Your message</label>
+    <textarea id="plaintext" maxlength="3000" rows="3" placeholder="Meet at the library at 3 PM."></textarea>
+    <div class="between helper-line"><span>Just use a sample message for the demo.</span><span id="charCount">0 / 3000 characters</span></div>
+    <div class="buttonRow"><button id="saveMessage" class="button primary">Encrypt & save</button><button id="fillSample" class="button secondary" type="button">Try sample message</button></div>
+    <div id="sendFeedback" class="feedback" role="status"></div>
+  </section>
+  <section class="panel" id="step-receive"><div class="sectionTitle"><span class="number">03</span><div><h2>Step 3: Decrypt the message</h2><p>Open another tab, enter the same key, and try to read the message.</p></div></div>
+    <div class="between"><span id="count" class="counter">0 encrypted records</span><div class="buttonRow inline-actions"><a id="openReceiver" class="button secondary small" href="/" target="_blank" rel="noopener noreferrer">Open another tab</a><button id="refreshMessages" class="button secondary small">↻ Refresh</button></div></div>
+    <div id="messageList" class="messageList"></div>
+    <div id="decryptResult" class="feedback" role="status"></div>
+  </section>
+  <section class="panel" id="step-attack"><div class="sectionTitle"><span class="number">04</span><div><h2>Step 4: Test the encryption</h2><p>Here we can try the wrong key or change the encrypted data to see what happens.</p></div></div>
+    <div class="buttonRow"><button id="wrongKey" class="button secondary">Try wrong key</button><button id="tamper" class="button secondary">Change encrypted data</button></div>
+    <div id="attackResult" class="feedback" role="status"></div>
+    <p class="explain"><strong>What should happen:</strong> Both tests should fail. AES-GCM recomputes the authentication tag when decrypting. With the wrong key or changed data, the tag does not match, so the browser refuses to decrypt. (It cannot tell which of the two happened.) We are not breaking AES here; we are showing how it responds.</p>
+    <details><summary>See what is saved on the server</summary><pre id="rawServerData"></pre></details>
+  </section>
+  <section class="panel" id="step-caesar"><div class="sectionTitle"><span class="number">05</span><div><h2>Step 5: Compare it with Caesar cipher</h2><p>Caesar cipher is a lot easier to break because there are only 26 possible shifts. The attack tries all of them and uses English letter frequency to pick the right one, without knowing the key.</p></div></div>
+    <label for="caesarInput">Sample message</label><input id="caesarInput" value="THE PROJECT DEMO IS ON FRIDAY" maxlength="120">
+    <div class="buttonRow"><button id="runCaesar" class="button primary">Try all 26 shifts</button></div>
+    <div class="cipherHeading">Encrypted message (secret random shift)</div><code id="caesarCipher" class="cipherOutput">No ciphertext yet.</code>
+    <div id="caesarFeedback" class="feedback" role="status"></div><div id="caesarAttempts" class="attempts"></div>
+    <p class="explain"><strong>The difference:</strong> We can try every Caesar shift and find the original message. AES-256 has 2^256 possible keys, far too many to try, and AES-GCM also checks for tampering.</p>
+  </section>
+  <section class="panel" id="step-iv"><div class="sectionTitle"><span class="number">06</span><div><h2>Step 6: The IV-reuse attack</h2><p>AES-GCM is only safe if every message gets a new IV. Here we break that rule on purpose and recover a secret message without the key.</p></div></div>
+    <label for="ivKnown">Message A (the attacker knows this one)</label>
+    <input id="ivKnown" value="Reminder: the group meeting moved to room 204 at noon." maxlength="200">
+    <label for="ivSecret">Message B (secret, same key)</label>
+    <input id="ivSecret" value="Our Wi-Fi password is purple-tiger-42" maxlength="200">
+    <div class="buttonRow"><button id="ivBroken" class="button danger">Broken mode: reuse the IV</button><button id="ivSafe" class="button primary">CipherSafe mode: new IV each time</button></div>
+    <div id="ivFeedback" class="feedback" role="status"></div>
+    <div id="ivDetails" class="ivDetails" hidden>
+      <div class="cipherHeading">Record A</div><code id="ivRecordA" class="cipherOutput"></code>
+      <div class="cipherHeading">Record B</div><code id="ivRecordB" class="cipherOutput"></code>
+      <div class="cipherHeading">What the attacker recovered (C<sub>A</sub> ⊕ C<sub>B</sub> ⊕ Message A, no key used)</div><code id="ivRecovered" class="cipherOutput"></code>
+    </div>
+    <p class="explain"><strong>Why it works:</strong> GCM makes a keystream from the key and IV, then XORs it with the message. Same key + same IV means the same keystream, so C<sub>A</sub> ⊕ C<sub>B</sub> = A ⊕ B. If the attacker knows A, they get B. Reusing an IV also lets an attacker forge the authentication tag. CipherSafe avoids all of this by picking a random 12-byte IV for every message.</p>
+  </section>
+  <footer><a class="back-top" href="#step-key">↑ Back to the top</a><button id="resetDemo" class="button danger">Clear demo messages</button><p>This is a local school project, not an app for sending real private messages.</p></footer>
+</main>
+</body></html>
